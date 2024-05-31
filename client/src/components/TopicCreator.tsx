@@ -3,10 +3,22 @@
 import { useState } from "react"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
+import { useMutation } from "@tanstack/react-query";
+import { createTopic } from "@/app/action";
+
+
 
 export function TopicCreator() {
       const [input, setInput] = useState<string>("");
 
+      createTopic
+
+      // for mutating data // we use useQuery to get data
+      const { mutate, error, isPending } = useMutation({
+            // our mutation function// to fetch data or do other things
+            mutationFn: createTopic
+      });
+      
       return (
             <div className="mt-12 flex flex-col gap-2">
                   <div className="flex gap-2">
@@ -18,9 +30,11 @@ export function TopicCreator() {
                               placeholder="enter topic here..."
                         />
 
-                        <Button>Create</Button>
+                        <Button disabled={isPending} onClick={() => mutate({ topicName: input })}>Create</Button>
 
                   </div>
+
+                  { error ? <p className="text-sm text-red-600">{error.message}</p> : null }
             </div>
       )
 }
